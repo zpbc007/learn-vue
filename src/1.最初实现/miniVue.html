@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+        <p>{{msg}}</p>
+        <p>{{ok}}</p>
+        <p>{{cancel}}</p>
+    </div>
+</body>
+<script>
+    const mark = 'zp-vue'
+    function Vue (id, initData) {
+
+        // 数据存储于bindings中
+        const bindings = {},
+        // 外部改变data
+        data = this.data = {},
+        // 通过穿入的id获取dom
+        el = this.el = document.getElementById(id)
+        // 替换自定义属性
+        el.innerHTML = el.innerHTML.replace(/\{\{(.*)\}\}/g, markToken)
+        // 遍历需要绑定的数据
+        for (let variable in bindings) {
+            bind(variable)
+        }
+        // 将初始数据放入data中
+        if (initData) {
+            for (let variable in initData) {
+                data[variable] = initData[variable]
+            }
+        }
+        // 替换{{*}}为自定义属性
+        function markToken(match, variable) {
+            bindings[variable] = {}
+            return `<span ${mark}='${variable}'></span>`
+        }
+
+        // 将数据与dom绑定
+        function bind (variable) {
+            // 通过自定义属性找到对应的dom
+            bindings[variable].els = el.querySelectorAll(`[${mark}=${variable}]`)
+            // 移除自定义属性
+            bindings[variable].els.forEach(element => {
+                element.removeAttribute(mark)
+            })
+            Object.defineProperty(data, variable, {
+                set: function (newVal) {
+                    bindings[variable].els.forEach(element => {
+                        bindings[variable].value = element.textContent =newVal
+                    })
+                },
+                get: function () {
+                    return bindings[variable].value
+                }
+            })
+        }
+    }
+
+    let app = new Vue('app', {
+        msg: 'hello',
+        ok: '确认',
+        cancel: '取消'
+    })
+</script>
+</html>
