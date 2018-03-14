@@ -18,7 +18,7 @@ function Seed (opts) {
         // 带有指令的元素
         els = root.querySelectorAll(selector)
         
-    // 内部用数据
+    // 内部用数据 在this上绑定相同对象是为了dump与destory的使用
     const bindings = self._bindings = {}
     // 外部接口 defineProperty 改变时调用对应指令进行更新
     self.scope = {}
@@ -76,7 +76,7 @@ function cloneAttributes (attributes) {
     })
 }
 
-// 根据模板指令找到真实的指令
+// 解析模板指令 找到指令对应的函数、指令中的参数、指令中的过滤器
 function parseDirective (attr) {
     // 没有指令
     if (attr.name.indexOf(prefix) === -1) {
@@ -118,7 +118,7 @@ function parseDirective (attr) {
             key,
             filters,
             definition: def,
-            arguments: arg,
+            argument: arg,
             // 对应的model改变时如何更新dom 如果为on-**的走update方法
             update: typeof def === 'function' 
                 ? def
@@ -129,6 +129,7 @@ function parseDirective (attr) {
 
 // 将指令与dom元素绑定
 function bindDirective (seed, el, bindings, directive) {
+    directive.el = el
     // 移除dom上的自定义指令
     el.removeAttribute(directive.attr.name)
     let key = directive.key,
@@ -139,7 +140,6 @@ function bindDirective (seed, el, bindings, directive) {
             directives: []
         }
     }
-    directive.el = el
     binding.directives.push(directive)
     // 如果为自定义方法与el绑定
     if (directive.bind) {
@@ -159,13 +159,12 @@ function bindAccessors (seed, key, binding) {
         set: function (value) {
             binding.value = value
             binding.directives.forEach(directive => {
-                if (value && directive.filters) {
-                    // 有过滤器先过滤
-                    value = applyFilters(value, directive)
-                }
+                let filteredValue = value && directive.filters
+                    ? applyFilters(value, directive)
+                    : value
                 directive.update(
                     directive.el,
-                    value,
+                    filteredValue,
                     directive.argument,
                     directive,
                     seed
@@ -188,13 +187,6 @@ function applyFilters (value, directive) {
     return value
 }
 
-// export {
-//     create: function (opts) {
-//         return new Seed(opts)
-//     },
-//     filters: Filters,
-//     directives: Directives
-// }
 function create (opts) {
     return new Seed(opts)
 }

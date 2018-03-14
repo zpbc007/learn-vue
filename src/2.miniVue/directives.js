@@ -11,6 +11,7 @@ const directives = {
         el.classList[value ? 'add' : 'remove'](classname)
     },
     on: {
+        // 初始化调用
         update: function (el, handler, event, directive) {
             if (!directive.handlers) {
                 directive.handlers = {}
@@ -26,10 +27,19 @@ const directives = {
                 handlers[event] = handler
             }
         },
-        // 移除事件绑定
+        // 移除事件绑定 destory调用
         unbind: function (el, event, directive) {
             if (directive.handlers) {
                 el.removeEventListener(event, directive.handlers[event])
+            }
+        },
+        // 内部满足条件的dom会触发（没太懂）
+        customFilter: function (handler, selectors) {
+            return function (e) {
+                let match = selectors.every(selector => {
+                    return e.target.webkitMatchesSelector(selector)
+                })
+                if (match) handler.apply(this, arguments)
             }
         }
     }

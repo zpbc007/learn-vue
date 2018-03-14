@@ -9,22 +9,30 @@
 </head>
 <body>
     <div id="app">
-        <span sd-text="msg"></span>
-        <span sd-text="text | capitalize"></span>
-        <div sd-show="show">qqqq</div>
+        <p sd-text="msg | uppercase"></p>
+        <p sd-text="text | capitalize"></p>
+        <p sd-show="show">qqqq</p>
+        <button sd-on-click="showFunc">显示|隐藏</button>
+        <button sd-text="removeText" sd-on-click="remove"></button>
     </div>
     <script type="module">
         import {create} from '../../src/2.miniVue/main.js'
-        var scope = {
-            msg: '123',
-            text: 'test',
-            show: false
-        }
         window.onload = function () {
             // 将实例暴露在window中
-            window.app = vue.create({
+            var app = create({
                 id: 'app',
-                scope
+                scope: {
+                    msg: 'message',
+                    text: 'test',
+                    show: false,
+                    removeText: '销毁',
+                    showFunc: function () {
+                        app.scope['show'] = !app.scope['show']
+                    },
+                    remove: function () {
+                        app.destory()
+                    }
+                }
             })
         }
     </script>
