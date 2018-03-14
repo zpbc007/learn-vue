@@ -13,6 +13,21 @@
         <span sd-text="text | capitalize"></span>
         <div sd-show="show">qqqq</div>
     </div>
-    <script src="../../dist/bundle.js"></script>
+    <!-- <script src="../../dist/bundle.js"></script> -->
+    <script type="module">
+        import {create} from '../../src/2.miniVue/main.js'
+        var scope = {
+            msg: '123',
+            text: 'test',
+            show: false
+        }
+        window.onload = function () {
+            // 将实例暴露在window中
+            window.app = vue.create({
+                id: 'app',
+                scope
+            })
+        }
+    </script>
 </body>
 </html>

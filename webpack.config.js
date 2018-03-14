@@ -3,7 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 
 const config = {
-    entry: './test/2.test/test.js',
+    entry: './src/2.miniVue/main.js',
     output: {
         filename: 'bundle.js',
         path: path.resolve(__dirname, 'dist')
