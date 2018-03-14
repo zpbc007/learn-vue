@@ -4,8 +4,11 @@ import Filters from './filters'
 import Directives from './directives'
 // 指令前缀
 const prefix = 'sd',
-    // 通过指令选择元素
+    // 通过指令选择元素 不能选择v-on-*的元素 先手动添加
     selector = Object.keys(Directives).map(dir => {
+        if (dir === 'on') {
+            return `[${prefix}-${dir}-click], [${prefix}-${dir}-mouseover]`
+        }
         return `[${prefix}-${dir}]`
     }).join()
 
@@ -13,9 +16,10 @@ function Seed (opts) {
     const self = this,
         root = this.el = document.getElementById(opts.id),
         // 带有指令的元素
-        els = root.querySelectorAll(selector),
-        // 内部用数据
-        bindings = {}
+        els = root.querySelectorAll(selector)
+        
+    // 内部用数据
+    const bindings = self._bindings = {}
     // 外部接口 defineProperty 改变时调用对应指令进行更新
     self.scope = {}
 
@@ -36,6 +40,29 @@ function Seed (opts) {
     for (let key in bindings) {
         self.scope[key] = opts.scope[key]
     }
+}
+// 将当当前绑定数据返回
+Seed.prototype.dump = function () {
+    let  data = {}
+    for (let key in this._bindings) {
+        data[key] = this._bindings[key].value
+    }
+    return data
+}
+// 清除事件绑定
+Seed.prototype.destory = function () {
+    for (let key in this._bindings) {
+        this._bindings[key].directives.forEach(directive => {
+            if (directive.definition.unbind) {
+                directive.definition.unbind(
+                    directive.el,
+                    directive.argument,
+                    directive
+                )
+            }
+        })
+    }
+    this.el.parentNode.removeChild(this.el)
 }
 
 // 复制元素的属性
@@ -92,7 +119,7 @@ function parseDirective (attr) {
             filters,
             definition: def,
             arguments: arg,
-            // 对应的model改变时如何更新dom
+            // 对应的model改变时如何更新dom 如果为on-**的走update方法
             update: typeof def === 'function' 
                 ? def
                 : def.update
@@ -114,6 +141,7 @@ function bindDirective (seed, el, bindings, directive) {
     }
     directive.el = el
     binding.directives.push(directive)
+    // 如果为自定义方法与el绑定
     if (directive.bind) {
         directive.bind(el, binding.value)
     }

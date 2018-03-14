@@ -7,3 +7,7 @@
 ## [a5e27b11]
 
 [添加了过滤与指令](./doc/2.init.md)
+
+## [3eb7f6fc]
+
+[添加了dump与destory方法](./doc/3.md)

@@ -16,6 +16,7 @@ const directives = {
                 directive.handlers = {}
             }
             let handlers = directive.handlers
+            // 如果有重复的事件先移除再绑定
             if (handlers[event]) {
                 el.removeEventListener(event, handlers[event])
             }
@@ -23,6 +24,12 @@ const directives = {
                 handler = handler.bind(el)
                 el.addEventListener(event, handler)
                 handlers[event] = handler
+            }
+        },
+        // 移除事件绑定
+        unbind: function (el, event, directive) {
+            if (directive.handlers) {
+                el.removeEventListener(event, directive.handlers[event])
             }
         }
     }
