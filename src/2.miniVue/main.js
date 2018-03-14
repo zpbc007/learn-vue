@@ -1,7 +1,7 @@
 // 过滤器
-import Filters from './filters'
+import Filters from './filters.js'
 // 指令
-import Directives from './directives'
+import Directives from './directives.js'
 // 指令前缀
 const prefix = 'sd',
     // 通过指令选择元素 不能选择v-on-*的元素 先手动添加
