@@ -35,6 +35,28 @@ const directives = {
                 this.el.removeEventListener(event, this.handlers[event])
             }
         }
+    },
+    each: {
+        update: function (collection) {
+            augmentArray(collection, this)
+        },
+        mutate: function (mutation) {
+            console.log(mutation)
+        }
+    }
+}
+
+const push = [].push,
+    slice = [].slice
+
+function augmentArray (collection, directive) {
+    collection.push = function (element) {
+        push.call(this, arguments)
+        directive.mutate({
+            event: 'push',
+            elements: slice.call(arguments),
+            collection: collection
+        })
     }
 }
 

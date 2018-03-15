@@ -12,6 +12,9 @@
         <p sd-text="msg | uppercase"></p>
         <p sd-text="text | capitalize"></p>
         <p sd-show="show">qqqq</p>
+        <div sd-each="todos">
+            <span sd-text="text"></span>
+        </div>
         <button sd-text="showTest" sd-on-click="showFunc"></button>
         <button sd-text="removeText" sd-on-click="remove"></button>
     </div>
@@ -19,7 +22,7 @@
         import {create} from '../../src/2.miniVue/main.js'
         window.onload = function () {
             // 将实例暴露在window中
-            var app = create({
+            window.app = create({
                 id: 'app',
                 scope: {
                     msg: 'message',
@@ -32,7 +35,17 @@
                     },
                     remove: function () {
                         app.destory()
-                    }
+                    },
+                    todos: [
+			        	{
+			        		title: 'make this shit work',
+			        		done: false
+			        	},
+			        	{
+			        		title: 'make this shit kinda work',
+			        		done: true
+			        	}
+			        ]
                 }
             })
         }
