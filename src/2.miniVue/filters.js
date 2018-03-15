@@ -8,6 +8,14 @@ const filters = {
     // 全大写
     uppercase: function (value) {
         return value.toUpperCase()
+    },
+    delegate: function (handler, selectors) {
+        return function (e) {
+            const match = selectors.every(selector => {
+                return e.target.webkitMatchesSelector(selector)
+            })
+            if (match) handler.apply(this, arguments)
+        }
     }
 }
 

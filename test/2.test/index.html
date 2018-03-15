@@ -12,7 +12,7 @@
         <p sd-text="msg | uppercase"></p>
         <p sd-text="text | capitalize"></p>
         <p sd-show="show">qqqq</p>
-        <button sd-on-click="showFunc">显示|隐藏</button>
+        <button sd-text="showTest" sd-on-click="showFunc"></button>
         <button sd-text="removeText" sd-on-click="remove"></button>
     </div>
     <script type="module">
@@ -26,6 +26,7 @@
                     text: 'test',
                     show: false,
                     removeText: '销毁',
+                    showTest: '显示|隐藏',
                     showFunc: function () {
                         app.scope['show'] = !app.scope['show']
                     },
