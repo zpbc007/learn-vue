@@ -1,6 +1,7 @@
 // 指令类
 import Directives from './directives.js'
 import Filters from './filters.js'
+import config from './config.js'
 
     // 匹配|前的字符
 const KEY_RE = /^[^\|]+/,
@@ -34,6 +35,7 @@ function Directive (def, attr, arg, key) {
             // 获取过滤器名
             const tokens = fitler.replace('|', '').trim().split(/\s+/)
             return {
+                name: tokens[0],
                 apply: Filters[tokens[0]],
                 args: tokens.length > 1 ? tokens.slice(1) : null
             }
@@ -51,13 +53,15 @@ Directive.prototype.update = function (value) {
 Directive.prototype.applyFilters = function (value) {
     let filtered = value
     this.filters.forEach((fitler) => {
+        if (!fitler.apply) throw new Error(`Unknown filter: ${filter.name}`) 
         filtered = fitler.apply(filtered, fitler.args)
     })
     return filtered
 }
 
 // 解析模板
-function parse (attr, prefix) {
+function parse (attr) {
+    const prefix = config.prefix
     if (attr.name.indexOf(prefix) === -1) {
         return null
     }

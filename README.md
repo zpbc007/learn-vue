@@ -26,4 +26,7 @@
 
 [添加each指令的update与mutate方法](./doc/6.md)
 
+## [79760c09]
+
+[抽离Seed](./doc/7.md)
 

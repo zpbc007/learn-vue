@@ -1,3 +1,7 @@
+import config from './config.js'
+import watchArray from './watchArray.js'
+import { watch } from 'fs';
+
 // 各种指令
 const directives = {
     // 绑定显示文字
@@ -38,7 +42,7 @@ const directives = {
     },
     each: {
         update: function (collection) {
-            augmentArray(collection, this)
+            watchArray(collection, this.mutate.bind(this))
         },
         mutate: function (mutation) {
             console.log(mutation)
