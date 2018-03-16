@@ -2,22 +2,26 @@
 import Directive from './directive.js'
 import config from './config.js'
 
-function Seed (opts) {
-    const root = this.el = document.getElementById(opts.id),
-        // 带有指令的元素
-        els = root.querySelectorAll(config.selector)
-        
+function Seed (el, data) {
+
+    if (typeof el === 'string') {
+        el = document.querySelector(el)
+    }
+
+    this.el = el
     // 内部用数据 
     this._bindings = {}
     // 外部接口 defineProperty 改变时调用对应指令进行更新
     this.scope = {}
 
+    // 带有指令的元素
+    let els = el.querySelectorAll(config.selector)
     ;[].forEach.call(els, this._compileNode.bind(this))
-    this._compileNode(root)
+    this._compileNode(el)
 
     // 初始化
     for (let key in this._bindings) {
-        this.scope[key] = opts.scope[key]
+        this.scope[key] = data[key]
     }
 }
 // 遍历节点属性 找到真实指令 与节点绑定
@@ -97,3 +101,5 @@ function cloneAttributes (attributes) {
         }
     })
 }
+
+export default seed
