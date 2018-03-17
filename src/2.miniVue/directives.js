@@ -1,6 +1,5 @@
 import config from './config.js'
 import watchArray from './watchArray.js'
-import { watch } from 'fs';
 
 // 各种指令
 const directives = {
@@ -27,7 +26,6 @@ const directives = {
                 this.el.removeEventListener(event, handlers[event])
             }
             if (handler) {
-                handler = handler.bind(this.el)
                 this.el.addEventListener(event, handler)
                 handlers[event] = handler
             }
@@ -47,20 +45,6 @@ const directives = {
         mutate: function (mutation) {
             console.log(mutation)
         }
-    }
-}
-
-const push = [].push,
-    slice = [].slice
-
-function augmentArray (collection, directive) {
-    collection.push = function (element) {
-        push.call(this, arguments)
-        directive.mutate({
-            event: 'push',
-            elements: slice.call(arguments),
-            collection: collection
-        })
     }
 }
 

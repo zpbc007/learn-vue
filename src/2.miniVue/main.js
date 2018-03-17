@@ -40,4 +40,4 @@ Seed.filter = function (name, fn) {
     filters[name] = fn
 }
 
-export default Sedd
+export default Seed

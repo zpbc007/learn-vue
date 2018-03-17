@@ -8,47 +8,48 @@
     <title>Document</title>
 </head>
 <body>
-    <div id="app">
-        <p sd-text="msg | uppercase"></p>
-        <p sd-text="text | capitalize"></p>
-        <p sd-show="show">qqqq</p>
-        <div sd-each="todos">
-            <span sd-text="text"></span>
-        </div>
-        <button sd-text="showTest" sd-on-click="showFunc"></button>
-        <button sd-text="removeText" sd-on-click="remove"></button>
+    <div id="test" sd-on-click="changeMessage | delegate .button">
+        <p sd-text="msg.wow | capitalize" sd-on-click="remove"></p>
+        <p sd-text="msg.wow | uppercase" class="button"></p>
+        <p sd-text="total | money"></p>
+        <p sd-class-red="error" sd-text="hello"></p>
+        <ul sd-show="todos">
+            <li sd-each-todo="todos" sd-text="todo.text"></li>
+        </ul>
     </div>
     <script type="module">
-        import {create} from '../../src/2.miniVue/main.js'
-        window.onload = function () {
-            // 将实例暴露在window中
-            window.app = create({
-                id: 'app',
-                scope: {
-                    msg: 'message',
-                    text: 'test',
-                    show: false,
-                    removeText: '销毁',
-                    showTest: '显示|隐藏',
-                    showFunc: function () {
-                        app.scope['show'] = !app.scope['show']
-                    },
-                    remove: function () {
-                        app.destory()
-                    },
-                    todos: [
-			        	{
-			        		title: 'make this shit work',
-			        		done: false
-			        	},
-			        	{
-			        		title: 'make this shit kinda work',
-			        		done: true
-			        	}
-			        ]
+        import Seed from '../../src/2.miniVue/main.js'
+
+        // 自定义过滤器
+        Seed.filter('money', function (value) {
+            return `\$${value.toFixed(2)}`
+        })
+        
+        // 继承seed
+        const Todos = Seed.extend({
+            changeMessage: function () {
+                this.scope['msg.wow'] = 'hola'
+            },
+            remove: function () {
+                this.destory()
+            }
+        })
+
+        window.todos = new Todos('#test', {
+            total     : 1000,
+            'msg.wow' : 'wow',
+            hello     : 'hello',
+            todos     : [
+                {
+                    title: 'make this shit work',
+                    done: false
+                },
+                {
+                    title: 'make this shit kinda work',
+                    done: true
                 }
-            })
-        }
+            ]
+        })
     </script>
 </body>
 </html>

@@ -27,7 +27,7 @@ function Seed (el, data) {
 // 遍历节点属性 找到真实指令 与节点绑定
 Seed.prototype._compileNode = function (node) {
     cloneAttributes(node.attributes).forEach((attr) => {
-        const directive = Directive.parse(attr, prefix)
+        const directive = Directive.parse(attr)
         if (directive) {
             this._bind(node, directive)
         }
@@ -93,7 +93,6 @@ Seed.prototype.destory = function () {
 
 // 复制元素的属性
 function cloneAttributes (attributes) {
-    console.log(attributes)
     return [].map.call(attributes, attr => {
         return {
             name: attr.name,
@@ -102,4 +101,4 @@ function cloneAttributes (attributes) {
     })
 }
 
-export default seed
+export default Seed
