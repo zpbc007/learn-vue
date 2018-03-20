@@ -3,14 +3,7 @@ import Seed from './seed.js'
 import directives from './directives.js'
 import filters from './filters.js'
 
-function buildSelector () {
-    config.selector = Object.keys(directives).map(directive => {
-        return `[${config.prefix}-${directive}]`
-    }).join()
-}
-
 Seed.config = config
-buildSelector()
 
 Seed.extend = function (opts) {
     const Spore = function () {
@@ -33,7 +26,6 @@ Seed.extend = function (opts) {
 
 Seed.directive = function (name, fn) {
     directives[name] = fn
-    buildSelector()
 }
 
 Seed.filter = function (name, fn) {

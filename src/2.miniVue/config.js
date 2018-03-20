@@ -1,4 +1,3 @@
 export default {
-    prefix: 'sd',
-    selector: null
+    prefix: 'sd'
 }

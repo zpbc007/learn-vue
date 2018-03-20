@@ -5,8 +5,11 @@ import config from './config.js'
 
     // 匹配|前的字符
 const KEY_RE = /^[^\|]+/,
-    // 匹配以|开头 |后面的字符 
-    FILTERS_RE = /\|[^\|]+/g
+    // 匹配以|开头的部分
+    FILTERS_RE = /\|[^\|]+/g,
+    // 匹配不带空白符和引号的部分或在引号内的部分
+    FILTER_TOKEN_RE = /[^\s']+|'[^']+'/g,
+    QUOTE_RE = /'/g
 
 // 指令对象
 function Directive (def, attr, arg, key) {
@@ -31,9 +34,12 @@ function Directive (def, attr, arg, key) {
     // 绑定过滤器
     const filters = attr.value.match(FILTERS_RE)
     if (filters) {
-        this.filters = filters.map(function (fitler) {
+        this.filters = filters.map(function (filter) {
             // 获取过滤器名
-            const tokens = fitler.replace('|', '').trim().split(/\s+/)
+            const tokens = filter.slice(1) // 去掉 |
+                .match(FILTER_TOKEN_RE) // 匹配过滤器名与参数
+                .map(token => token.replace(QUOTE_RE, '').trim()) // 去掉引号 
+
             return {
                 name: tokens[0],
                 apply: Filters[tokens[0]],
